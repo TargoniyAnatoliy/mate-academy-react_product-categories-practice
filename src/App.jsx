@@ -75,29 +75,6 @@ export const App = () => (
                 {category.title}
               </a>
             ))}
-
-            {/* <a
-              data-cy="Category"
-              className="button mr-2 my-1"
-              href="#/"
-            >
-              Category 2
-            </a>
-
-            <a
-              data-cy="Category"
-              className="button mr-2 my-1 is-info"
-              href="#/"
-            >
-              Category 3
-            </a>
-            <a
-              data-cy="Category"
-              className="button mr-2 my-1"
-              href="#/"
-            >
-              Category 4
-            </a> */}
           </div>
 
           <div className="panel-block">
@@ -187,38 +164,17 @@ export const App = () => (
                     {category.icon} - {category.title}
                   </td>
 
-                  <td data-cy="ProductUser" className="has-text-link">
+                  <td
+                    data-cy="ProductUser"
+                    className={
+                      user.sex === 'm' ? 'has-text-link' : 'has-text-danger'
+                    }
+                  >
                     {user.name}
                   </td>
                 </tr>
               );
             })}
-
-            {/* <tr data-cy="Product">
-              <td className="has-text-weight-bold" data-cy="ProductId">
-                2
-              </td>
-
-              <td data-cy="ProductName">Bread</td>
-              <td data-cy="ProductCategory">🍞 - Grocery</td>
-
-              <td data-cy="ProductUser" className="has-text-danger">
-                Anna
-              </td>
-            </tr>
-
-            <tr data-cy="Product">
-              <td className="has-text-weight-bold" data-cy="ProductId">
-                3
-              </td>
-
-              <td data-cy="ProductName">iPhone</td>
-              <td data-cy="ProductCategory">💻 - Electronics</td>
-
-              <td data-cy="ProductUser" className="has-text-link">
-                Roma
-              </td>
-            </tr> */}
           </tbody>
         </table>
       </div>
