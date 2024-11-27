@@ -172,7 +172,7 @@ export const App = () => (
           <tbody key="productTable-body">
             {products.map(product => {
               const category = categories.find(
-                cat => cat.id === product.categoryId
+                cat => cat.id === product.categoryId,
               );
               const user = users.find(owner => owner.id === category.ownerId);
 
