@@ -2,16 +2,13 @@
 import React from 'react';
 import './App.scss';
 
-// import usersFromServer from './api/users';
-// import categoriesFromServer from './api/categories';
-// import productsFromServer from './api/products';
+import usersFromServer from './api/users';
+import categoriesFromServer from './api/categories';
+import productsFromServer from './api/products';
 
-// const products = productsFromServer.map((product) => {
-//   const category = null; // find by product.categoryId
-//   const user = null; // find by category.ownerId
-
-//   return null;
-// });
+const users = [...usersFromServer];
+const categories = [...categoriesFromServer];
+const products = [...productsFromServer];
 
 export const App = () => (
   <div className="section">
@@ -23,34 +20,15 @@ export const App = () => (
           <p className="panel-heading">Filters</p>
 
           <p className="panel-tabs has-text-weight-bold">
-            <a
-              data-cy="FilterAllUsers"
-              href="#/"
-            >
+            <a data-cy="FilterAllUsers" href="#/">
               All
             </a>
 
-            <a
-              data-cy="FilterUser"
-              href="#/"
-            >
-              User 1
-            </a>
-
-            <a
-              data-cy="FilterUser"
-              href="#/"
-              className="is-active"
-            >
-              User 2
-            </a>
-
-            <a
-              data-cy="FilterUser"
-              href="#/"
-            >
-              User 3
-            </a>
+            {users.map(user => (
+              <a key={user.id} data-cy="FilterUser" href="#/">
+                {user.name}
+              </a>
+            ))}
           </p>
 
           <div className="panel-block">
@@ -87,15 +65,18 @@ export const App = () => (
               All
             </a>
 
-            <a
-              data-cy="Category"
-              className="button mr-2 my-1 is-info"
-              href="#/"
-            >
-              Category 1
-            </a>
+            {categories.map(category => (
+              <a
+                key={category.id}
+                data-cy="Category"
+                className="button mr-2 my-1"
+                href="#/"
+              >
+                {category.title}
+              </a>
+            ))}
 
-            <a
+            {/* <a
               data-cy="Category"
               className="button mr-2 my-1"
               href="#/"
@@ -116,7 +97,7 @@ export const App = () => (
               href="#/"
             >
               Category 4
-            </a>
+            </a> */}
           </div>
 
           <div className="panel-block">
@@ -140,12 +121,11 @@ export const App = () => (
           data-cy="ProductTable"
           className="table is-striped is-narrow is-fullwidth"
         >
-          <thead>
+          <thead key="productTable-th">
             <tr>
               <th>
                 <span className="is-flex is-flex-wrap-nowrap">
                   ID
-
                   <a href="#/">
                     <span className="icon">
                       <i data-cy="SortIcon" className="fas fa-sort" />
@@ -157,7 +137,6 @@ export const App = () => (
               <th>
                 <span className="is-flex is-flex-wrap-nowrap">
                   Product
-
                   <a href="#/">
                     <span className="icon">
                       <i data-cy="SortIcon" className="fas fa-sort-down" />
@@ -169,7 +148,6 @@ export const App = () => (
               <th>
                 <span className="is-flex is-flex-wrap-nowrap">
                   Category
-
                   <a href="#/">
                     <span className="icon">
                       <i data-cy="SortIcon" className="fas fa-sort-up" />
@@ -181,7 +159,6 @@ export const App = () => (
               <th>
                 <span className="is-flex is-flex-wrap-nowrap">
                   User
-
                   <a href="#/">
                     <span className="icon">
                       <i data-cy="SortIcon" className="fas fa-sort" />
@@ -192,24 +169,32 @@ export const App = () => (
             </tr>
           </thead>
 
-          <tbody>
-            <tr data-cy="Product">
-              <td className="has-text-weight-bold" data-cy="ProductId">
-                1
-              </td>
+          <tbody key="productTable-body">
+            {products.map(product => {
+              const category = categories.find(
+                cat => cat.id === product.categoryId
+              );
+              const user = users.find(owner => owner.id === category.ownerId);
 
-              <td data-cy="ProductName">Milk</td>
-              <td data-cy="ProductCategory">🍺 - Drinks</td>
+              return (
+                <tr data-cy="Product" key={product.id}>
+                  <td className="has-text-weight-bold" data-cy="ProductId">
+                    {product.id}
+                  </td>
 
-              <td
-                data-cy="ProductUser"
-                className="has-text-link"
-              >
-                Max
-              </td>
-            </tr>
+                  <td data-cy="ProductName">{product.name}</td>
+                  <td data-cy="ProductCategory">
+                    {category.icon} - {category.title}
+                  </td>
 
-            <tr data-cy="Product">
+                  <td data-cy="ProductUser" className="has-text-link">
+                    {user.name}
+                  </td>
+                </tr>
+              );
+            })}
+
+            {/* <tr data-cy="Product">
               <td className="has-text-weight-bold" data-cy="ProductId">
                 2
               </td>
@@ -217,10 +202,7 @@ export const App = () => (
               <td data-cy="ProductName">Bread</td>
               <td data-cy="ProductCategory">🍞 - Grocery</td>
 
-              <td
-                data-cy="ProductUser"
-                className="has-text-danger"
-              >
+              <td data-cy="ProductUser" className="has-text-danger">
                 Anna
               </td>
             </tr>
@@ -233,13 +215,10 @@ export const App = () => (
               <td data-cy="ProductName">iPhone</td>
               <td data-cy="ProductCategory">💻 - Electronics</td>
 
-              <td
-                data-cy="ProductUser"
-                className="has-text-link"
-              >
+              <td data-cy="ProductUser" className="has-text-link">
                 Roma
               </td>
-            </tr>
+            </tr> */}
           </tbody>
         </table>
       </div>
