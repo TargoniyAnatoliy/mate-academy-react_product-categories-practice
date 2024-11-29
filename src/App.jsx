@@ -1,17 +1,11 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React, { useState } from 'react';
 import './App.scss';
+import cn from 'classnames';
 
 import usersFromServer from './api/users';
 import categoriesFromServer from './api/categories';
 import productsFromServer from './api/products';
-
-// const FILTER_BY = {
-//   all: 'all',
-//   category: 'Category',
-//   owner: 'Name',
-//   ownerCategory: 'ovner + category',
-// };
 
 const users = [...usersFromServer];
 const categories = [...categoriesFromServer];
@@ -49,8 +43,10 @@ export const App = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedUser, setSelectedUser] = useState('all');
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [sortField, setSortField] = useState(null);
+  const [sortOrder, setSortOrder] = useState('asc');
 
-  const categoriesFilter = categoryId => () => {
+  const setCategoriesFilter = categoryId => () => {
     if (selectedCategories.includes(categoryId)) {
       setSelectedCategories(selectedCategories.filter(id => id !== categoryId));
     } else {
@@ -63,12 +59,39 @@ export const App = () => {
     setSelectedUser('all');
   };
 
-  const productsToShow = filterProducts(
+  const sortProductBy = field => () => {
+    setSortField(field);
+
+    if (field !== sortField) {
+      setSortOrder('asc');
+    } else {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : null);
+    }
+  };
+
+  let productsToShow = filterProducts(
     products,
     searchQuery,
     selectedUser,
     selectedCategories,
-  );
+  ).toSorted((product1, product2) => {
+    switch (sortField) {
+      case 'id':
+        return product1.id - product2.id;
+      case 'productName':
+        return product1.name.localeCompare(product2.name);
+      case 'productCategory':
+        return product1.category.title.localeCompare(product2.category.title);
+      case 'owner':
+        return product1.owner.name.localeCompare(product2.owner.name);
+      default:
+        return 0;
+    }
+  });
+
+  if (sortOrder === 'desc') {
+    productsToShow = productsToShow.toReversed();
+  }
 
   return (
     <div className="section">
@@ -148,7 +171,7 @@ export const App = () => {
                   data-cy="Category"
                   className={`button mr-2 my-1 ${selectedCategories.includes(category.id) ? 'is-info' : null}`}
                   href="#/"
-                  onClick={categoriesFilter(category.id)}
+                  onClick={setCategoriesFilter(category.id)}
                 >
                   {category.title}
                 </a>
@@ -183,9 +206,26 @@ export const App = () => {
                   <th>
                     <span className="is-flex is-flex-wrap-nowrap">
                       ID
-                      <a href="#/">
+                      <a href="#/" onClick={sortProductBy('id')}>
                         <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort" />
+                          <i
+                            data-cy="SortIcon"
+                            className={cn(
+                              'fas',
+                              {
+                                'fa-sort':
+                                  sortField !== 'id' || sortOrder == null,
+                              },
+                              {
+                                'fa-sort-up':
+                                  sortField === 'id' && sortOrder === 'asc',
+                              },
+                              {
+                                'fa-sort-down':
+                                  sortField === 'id' && sortOrder === 'desc',
+                              },
+                            )}
+                          />
                         </span>
                       </a>
                     </span>
@@ -194,9 +234,29 @@ export const App = () => {
                   <th>
                     <span className="is-flex is-flex-wrap-nowrap">
                       Product
-                      <a href="#/">
+                      <a href="#/" onClick={sortProductBy('productName')}>
                         <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort-down" />
+                          <i
+                            data-cy="SortIcon"
+                            className={cn(
+                              'fas',
+                              {
+                                'fa-sort':
+                                  sortField !== 'productName' ||
+                                  sortOrder == null,
+                              },
+                              {
+                                'fa-sort-up':
+                                  sortField === 'productName' &&
+                                  sortOrder === 'asc',
+                              },
+                              {
+                                'fa-sort-down':
+                                  sortField === 'productName' &&
+                                  sortOrder === 'desc',
+                              },
+                            )}
+                          />
                         </span>
                       </a>
                     </span>
@@ -205,9 +265,26 @@ export const App = () => {
                   <th>
                     <span className="is-flex is-flex-wrap-nowrap">
                       Category
-                      <a href="#/">
+                      <a href="#/" onClick={sortProductBy('productCategory')}>
                         <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort-up" />
+                          <i
+                            data-cy="SortIcon"
+                            className={cn(
+                              'fas',
+                              {
+                                'fa-sort':
+                                  sortField !== 'productCategory' || sortOrder == null,
+                              },
+                              {
+                                'fa-sort-up':
+                                  sortField === 'productCategory' && sortOrder === 'asc',
+                              },
+                              {
+                                'fa-sort-down':
+                                  sortField === 'productCategory' && sortOrder === 'desc',
+                              },
+                            )}
+                          />
                         </span>
                       </a>
                     </span>
@@ -216,9 +293,26 @@ export const App = () => {
                   <th>
                     <span className="is-flex is-flex-wrap-nowrap">
                       User
-                      <a href="#/">
+                      <a href="#/" onClick={sortProductBy('owner')}>
                         <span className="icon">
-                          <i data-cy="SortIcon" className="fas fa-sort" />
+                          <i
+                            data-cy="SortIcon"
+                            className={cn(
+                              'fas',
+                              {
+                                'fa-sort':
+                                  sortField !== 'owner' || sortOrder == null,
+                              },
+                              {
+                                'fa-sort-up':
+                                  sortField === 'owner' && sortOrder === 'asc',
+                              },
+                              {
+                                'fa-sort-down':
+                                  sortField === 'owner' && sortOrder === 'desc',
+                              },
+                            )}
+                          />
                         </span>
                       </a>
                     </span>
